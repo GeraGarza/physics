@@ -135,7 +135,7 @@ export class SimulationControls {
                 <div style="display: flex; align-items: center; gap: 16px;">
                     <div style="width: 80px; font-size: 14px; font-weight: 500; color: #1A1B1E;">Time Scale</div>
                     <div style="flex: 1; display: flex; align-items: center; gap: 12px;">
-                        <input type="range" min="1" max="50" value="1" 
+                        <input type="range" min="1" max="100" value="1" 
                                style="flex: 1;" id="timeScaleSlider">
                         <span style="min-width: 40px; text-align: right; font-size: 13px; color: #1A1B1E;">1x</span>
                     </div>
