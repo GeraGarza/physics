@@ -1,8 +1,6 @@
-import { Simulation } from './simulation.js';
-import { SimulationControls } from './controls.js';
+// This file is now managed by React components
 
 let simulation;
-let controls;
 let lastTime = 0;
 let fixedTimeStep = 1/60; // 60 FPS
 
@@ -18,8 +16,8 @@ window.setup = function() {
     window.enableSound = false;
     simulation.init(window.digits);
 
-    // Initialize controls
-    controls = new SimulationControls(simulation);
+    // Make simulation globally available for React
+    window.simulation = simulation;
 }
 
 window.draw = function() {
@@ -41,7 +39,7 @@ window.draw = function() {
                 simulation.update(fixedTimeStep);
             }
         }
-        simulation.draw(this);
+        simulation.draw(window);
     }
 }
 

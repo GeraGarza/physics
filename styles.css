@@ -1,56 +1,59 @@
 body {
     margin: 0;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #f8f9fa;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    color: #1A1B1E;
+    padding: 0;
+    min-height: 100vh;
+    font-family: var(--mantine-font-family);
+    color: var(--mantine-color-text);
+    background-color: var(--mantine-color-dark-8);
+}
+
+#root {
+    min-height: 100vh;
+    width: 100%;
 }
 
 #canvas-container {
-    width: 1000px;
+    width: 100%;
     height: 400px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    background: var(--mantine-color-body);
+    border-radius: var(--mantine-radius-md);
+    box-shadow: var(--mantine-shadow-sm);
     overflow: hidden;
-    margin-bottom: 20px;
+    margin: 0;
 }
 
 .mantine-Button-filled {
-    background-color: #228be6;
-    color: white;
+    background-color: var(--mantine-color-blue-6);
+    color: var(--mantine-color-white);
     border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
+    padding: var(--mantine-spacing-sm) var(--mantine-spacing-md);
+    border-radius: var(--mantine-radius-sm);
     cursor: pointer;
     font-weight: 500;
     transition: background-color 0.2s;
 }
 
 .mantine-Button-filled:hover {
-    background-color: #1c7ed6;
+    background-color: var(--mantine-color-blue-7);
 }
 
 .mantine-Paper-root {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    background: var(--mantine-color-body);
+    border-radius: var(--mantine-radius-md);
+    box-shadow: var(--mantine-shadow-sm);
 }
 
 .mantine-Switch-root {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--mantine-spacing-sm);
     cursor: pointer;
-    color: #1A1B1E;
+    color: var(--mantine-color-text);
     font-weight: 500;
 }
 
 .mantine-Text-root {
-    color: #1A1B1E;
+    color: var(--mantine-color-text);
     font-weight: 500;
 }
 
@@ -58,8 +61,8 @@ input[type="range"] {
     -webkit-appearance: none;
     width: 100%;
     height: 6px;
-    background: #e9ecef;
-    border-radius: 3px;
+    background: var(--mantine-color-gray-2);
+    border-radius: var(--mantine-radius-xl);
     outline: none;
 }
 
@@ -67,35 +70,76 @@ input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 16px;
     height: 16px;
-    background: #228be6;
+    background: var(--mantine-color-blue-6);
     border-radius: 50%;
     cursor: pointer;
+    transition: transform 0.2s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
 }
 
 .mass-control .mantine-SegmentedControl-control {
-    transition: background-color 0.2s;
-    font-size: 14px;
-    border-radius: 4px;
+    transition: all 0.2s;
+    font-size: var(--mantine-font-size-sm);
+    border-radius: var(--mantine-radius-sm);
     cursor: pointer;
-    color: #1A1B1E;
+    color: var(--mantine-color-text);
     font-weight: 500;
-    border: 1px solid #dee2e6;
+    border: 1px solid var(--mantine-color-gray-3);
 }
 
 .mass-control .mantine-SegmentedControl-control:hover {
-    background-color: #f1f3f5;
+    background-color: var(--mantine-color-gray-1);
 }
 
 .mass-control .mantine-SegmentedControl-control[data-active="true"] {
-    color: white;
+    color: var(--mantine-color-white);
     font-weight: 600;
 }
 
 .controls-container {
-    width: 1000px;
-    margin-top: 0;
+    width: 100%;
+    max-width: var(--mantine-breakpoint-xl);
+    margin: var(--mantine-spacing-md) auto;
+    padding: 0 var(--mantine-spacing-md);
+}
+
+/* Dark mode adjustments */
+[data-mantine-color-scheme="dark"] {
+    #canvas-container {
+        background: var(--mantine-color-dark-7);
+    }
+
+    .mantine-Paper-root {
+        background: var(--mantine-color-dark-7);
+    }
+
+    input[type="range"] {
+        background: var(--mantine-color-dark-4);
+    }
+
+    .mass-control .mantine-SegmentedControl-control {
+        border-color: var(--mantine-color-dark-4);
+    }
+
+    .mass-control .mantine-SegmentedControl-control:hover {
+        background-color: var(--mantine-color-dark-6);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: var(--mantine-breakpoint-sm)) {
+    .controls-container {
+        padding: 0 var(--mantine-spacing-xs);
+    }
+
+    #canvas-container {
+        height: 300px;
+    }
 }
 
 .dg.ac {
-    z-index: 1000 !important;
+    z-index: var(--mantine-z-index-modal) !important;
 } 

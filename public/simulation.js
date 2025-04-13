@@ -1,12 +1,10 @@
-import { Block } from './block.js';
-
-export class Simulation {
+class Simulation {
     constructor() {
         this.blocks = [];
         this.collisionCount = 0;
         this.isRunning = false;
         this.speed = 50; // Default speed (0-100)
-        this.timeScale = 1; // Default time scale (1-10)
+        this.timeScale = 1; // Default time scale (0-10)
         this.velocityScale = this.calculateVelocityScale();
         this.synth = new Tone.Synth().toDestination();
         this.massCategories = {
@@ -201,7 +199,10 @@ export class Simulation {
     }
 
     setTimeScale(newTimeScale) {
-        this.timeScale = Math.max(1, Math.min(10, newTimeScale));
+        this.timeScale = Math.max(0, Math.min(10, newTimeScale));
+        if (this.timeScale === 0) {
+            this.isRunning = false;
+        }
     }
 
     calculateVelocityScale() {
@@ -264,4 +265,7 @@ export class Simulation {
         }
         return null;
     }
-} 
+}
+
+// Make Simulation available globally
+window.Simulation = Simulation; 

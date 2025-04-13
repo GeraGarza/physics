@@ -19,7 +19,7 @@ A beautiful, interactive physics simulation demonstrating elastic collisions bet
 - **Conservation Laws**: Demonstrates conservation of momentum and energy
 - **Adjustable Parameters**:
   - Speed control (0-100)
-  - Time scale (1x-100x)
+  - Time scale (0x-1000x)
   - Sound effects toggle
 - **Mass Categories**:
   - Tiny (1kg)
@@ -35,7 +35,13 @@ A beautiful, interactive physics simulation demonstrating elastic collisions bet
 - **Stop**: Pause the simulation
 - **Reset**: Reset blocks to their initial positions
 - **Speed**: Adjust the initial velocity of the moving block
-- **Time Scale**: Speed up or slow down the simulation
+- **Time Scale**: Control simulation speed with fine-grained control:
+  - 0x: Pause
+  - 1x: Normal speed
+  - 5x: 5 times faster
+  - 10x: 10 times faster
+  - 100x: 100 times faster
+  - 1000x: 1000 times faster
 - **Sound**: Toggle collision sound effects
 
 ### Mass Controls
@@ -60,20 +66,32 @@ Where:
 1. **Equal Masses**: Complete transfer of momentum
 2. **Heavy vs Light**: Light block bounces back with increased velocity
 3. **Multiple Collisions**: Watch patterns emerge with different mass ratios
+4. **High-Speed Observation**: Use 1000x time scale to observe rapid collision patterns
 
 ## Technical Details
 
 Built using:
-- JavaScript (ES Modules)
-- HTML5 Canvas for rendering
-- Mantine UI components
+- TypeScript with ESM modules
+- React for UI components
+- Mantine UI for modern desktop interface
+- p5.js for physics simulation and rendering
 - Tone.js for sound effects
 
 ## Getting Started
 
 1. Clone the repository
-2. Open `index.html` in a modern web browser
-3. Start experimenting with different mass combinations!
+2. Install dependencies: `npm install`
+3. Start the development server: `npm run dev`
+4. Open in your browser and start experimenting!
+
+## Development
+
+The project uses:
+- TypeScript for type safety
+- React with functional components
+- Mantine UI components
+- p5.js for physics simulation
+- Electron for desktop application
 
 ## Browser Compatibility
 

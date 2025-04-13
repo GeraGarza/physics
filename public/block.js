@@ -1,4 +1,4 @@
-export class Block {
+class Block {
     constructor(x, size, mass, color) {
         this.initialX = x; // Store initial position
         this.x = x;
@@ -96,4 +96,7 @@ export class Block {
         }
         return false;
     }
-} 
+}
+
+// Make Block available globally
+window.Block = Block; 
