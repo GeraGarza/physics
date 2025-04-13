@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://esm.sh https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com; worker-src 'self' blob:; connect-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://esm.sh https://fonts.gstatic.com">
+    <title>Galperin Pi Collisions</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <!-- Mantine dependencies -->
+    <script type="importmap">
+    {
+        "imports": {
+            "@mantine/core": "https://esm.sh/@mantine/core@7.5.0",
+            "@mantine/hooks": "https://esm.sh/@mantine/hooks@7.5.0",
+            "react": "https://esm.sh/react@18.2.0",
+            "react-dom": "https://esm.sh/react-dom@18.2.0"
+        }
+    }
+    </script>
+    <link rel="stylesheet" href="https://esm.sh/@mantine/core@7.5.0/styles.css">
+</head>
+<body>
+    <div id="canvas-container"></div>
+    <script>
+        // Add error handling
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
+            console.error('Error: ' + msg + '\nURL: ' + url + '\nLine: ' + lineNo + '\nColumn: ' + columnNo + '\nError object: ' + JSON.stringify(error));
+            return false;
+        };
+    </script>
+    <script type="module" src="sketch.js"></script>
+</body>
+</html> 

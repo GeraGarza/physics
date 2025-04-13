@@ -1,0 +1,101 @@
+body {
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: #1A1B1E;
+}
+
+#canvas-container {
+    width: 1000px;
+    height: 400px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.mantine-Button-filled {
+    background-color: #228be6;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.mantine-Button-filled:hover {
+    background-color: #1c7ed6;
+}
+
+.mantine-Paper-root {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.mantine-Switch-root {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #1A1B1E;
+    font-weight: 500;
+}
+
+.mantine-Text-root {
+    color: #1A1B1E;
+    font-weight: 500;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 3px;
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #228be6;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.mass-control .mantine-SegmentedControl-control {
+    transition: background-color 0.2s;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #1A1B1E;
+    font-weight: 500;
+    border: 1px solid #dee2e6;
+}
+
+.mass-control .mantine-SegmentedControl-control:hover {
+    background-color: #f1f3f5;
+}
+
+.mass-control .mantine-SegmentedControl-control[data-active="true"] {
+    color: white;
+    font-weight: 600;
+}
+
+.controls-container {
+    width: 1000px;
+    margin-top: 0;
+}
+
+.dg.ac {
+    z-index: 1000 !important;
+} 
