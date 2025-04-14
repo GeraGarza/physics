@@ -27,6 +27,22 @@ run_with_timeout() {
 EXCLUDE_PATHS="-not -path '*/node_modules/*' -not -path '*/dist/*' -not -path '*/coverage/*' -not -path '*/\.*'"
 INCLUDE_TS_FILES="-name '*.ts' -o -name '*.tsx' -o -name '*.js' -o -name '*.jsx'"
 
+# Function to find source files (excluding node_modules and other non-source directories)
+find_source_files() {
+    find . -type f \( -name "*.ts" -o -name "*.tsx" \) \
+        -not -path "*/node_modules/*" \
+        -not -path "*/dist/*" \
+        -not -path "*/coverage/*" \
+        -not -path "*/dist-electron/*" \
+        -not -path "*/dist-web/*" \
+        -not -path "*/build/*" \
+        -not -path "*/out/*" \
+        -not -path "*/.next/*" \
+        -not -path "*/.cache/*" \
+        -not -path "*/.yarn/*" \
+        -not -path "*/node_modules/.vite/*"
+}
+
 # Function to find TypeScript and JavaScript files
 find_ts_js_files() {
     eval "find . -type f \( ${INCLUDE_TS_FILES} \) ${EXCLUDE_PATHS}"
@@ -54,10 +70,74 @@ extract_component_names() {
 calculate_similarity() {
     local file1="$1"
     local file2="$2"
-    local total_lines=$(wc -l < "$file1")
+    
+    # Early exit if files are the same
+    if [ "$file1" = "$file2" ]; then
+        echo "100"
+        return
+    fi
+    
+    # Get cached file info or calculate and cache
+    local cache_file1="${TEMP_DIR}/$(basename "$file1").cache"
+    local cache_file2="${TEMP_DIR}/$(basename "$file2").cache"
+    
+    if [ ! -f "$cache_file1" ]; then
+        local size1=$(wc -l < "$file1")
+        local first_lines1=$(head -n 20 "$file1" | sort)
+        echo "$size1" > "$cache_file1"
+        echo "$first_lines1" >> "$cache_file1"
+    else
+        local size1=$(head -n 1 "$cache_file1")
+        local first_lines1=$(tail -n +2 "$cache_file1")
+    fi
+    
+    if [ ! -f "$cache_file2" ]; then
+        local size2=$(wc -l < "$file2")
+        local first_lines2=$(head -n 20 "$file2" | sort)
+        echo "$size2" > "$cache_file2"
+        echo "$first_lines2" >> "$cache_file2"
+    else
+        local size2=$(head -n 1 "$cache_file2")
+        local first_lines2=$(tail -n +2 "$cache_file2")
+    fi
+    
+    # Early exit if files are very different in size
+    local size_diff=$((size1 > size2 ? size1 - size2 : size2 - size1))
+    if [ $((size_diff * 100 / size1)) -gt 50 ]; then
+        echo "0"
+        return
+    fi
+    
+    # Quick check of first 20 lines
+    local matching_first_lines=$(comm -12 <(echo "$first_lines1") <(echo "$first_lines2") | wc -l)
+    local first_lines_similarity=$(echo "scale=2; $matching_first_lines * 100 / 20" | bc)
+    
+    # If first lines are very different, likely not similar
+    if [ $(echo "$first_lines_similarity < 30" | bc) -eq 1 ]; then
+        echo "0"
+        return
+    fi
+    
+    # Only do full comparison if initial checks pass
+    local total_lines=$((size1 > size2 ? size1 : size2))
     local matching_lines=$(comm -12 <(sort "$file1") <(sort "$file2") | wc -l)
     echo "scale=2; $matching_lines * 100 / $total_lines" | bc
 }
+
+# Function to compare a pair of files
+compare_files() {
+    local file1="$1"
+    local file2="$2"
+    local similarity=$(calculate_similarity "$file1" "$file2")
+    if [ $(echo "$similarity > 80" | bc) -eq 1 ]; then
+        echo "SIMILAR:$file1:$file2:$similarity"
+    fi
+}
+
+# Export functions for parallel processing
+export -f calculate_similarity
+export -f compare_files
+export TEMP_DIR
 
 # Function to analyze file types
 analyze_file_types() {
@@ -280,19 +360,48 @@ done
 # Find similar components using content comparison
 echo -e "\n${YELLOW}Similar Components (by content):${NC}"
 echo "Comparing components (this may take a while)..."
+
+# Create list of files to compare
+find_ts_files > "${TEMP_DIR}/files.txt"
+
+# Filter out test files and non-component files
+grep -v "\.test\.tsx\?$\|\.stories\.tsx\?$\|\.d\.ts$" "${TEMP_DIR}/files.txt" > "${TEMP_DIR}/component_files.txt"
+
+# Generate pairs to compare
+declare -A compared_pairs
 while IFS= read -r file1; do
-    echo -n "."
     while IFS= read -r file2; do
-        if [ "$file1" != "$file2" ]; then
-            similarity=$(calculate_similarity "$file1" "$file2")
-            if [ $(echo "$similarity > 80" | bc) -eq 1 ]; then
-                echo -e "\nHigh similarity ($similarity%) between:"
-                echo "  - $file1"
-                echo "  - $file2"
+        if [ "$file1" != "$file2" ] && [ -z "${compared_pairs["$file1:$file2"]}" ] && [ -z "${compared_pairs["$file2:$file1"]}" ]; then
+            compared_pairs["$file1:$file2"]=1
+            
+            # Skip if files are in different directories and have different names
+            dir1=$(dirname "$file1")
+            dir2=$(dirname "$file2")
+            name1=$(basename "$file1" .tsx)
+            name1=$(basename "$name1" .ts)
+            name2=$(basename "$file2" .tsx)
+            name2=$(basename "$name2" .ts)
+            
+            if [ "$dir1" != "$dir2" ] && [ "$name1" != "$name2" ]; then
+                continue
             fi
+            
+            echo "$file1:$file2"
         fi
-    done < <(find_ts_files)
-done < <(find_ts_files)
+    done < "${TEMP_DIR}/component_files.txt"
+done < "${TEMP_DIR}/component_files.txt" > "${TEMP_DIR}/pairs.txt"
+
+# Process pairs in parallel
+echo "Processing comparisons..."
+cat "${TEMP_DIR}/pairs.txt" | xargs -P 4 -I {} bash -c 'compare_files ${1%:*} ${1#*:}' -- {} | while read -r result; do
+    if [[ $result == SIMILAR:* ]]; then
+        IFS=':' read -r _ file1 file2 similarity <<< "$result"
+        echo -e "\nHigh similarity ($similarity%) between:"
+        echo "  - $file1"
+        echo "  - $file2"
+    fi
+done
+
 echo -e "\nDone comparing components."
 
 # Find potentially unused components
@@ -310,5 +419,71 @@ for component in "${!component_locations[@]}"; do
     fi
 done
 echo -e "\nDone checking for unused components."
+
+# 13. Component Quality Analysis
+echo -e "\n${BLUE}13. Component Quality Analysis${NC}"
+
+echo -e "\n${GREEN}Component Complexity:${NC}"
+while IFS= read -r file; do
+    analyze_component_complexity "$file"
+done < "${TEMP_DIR}/component_files.txt"
+
+echo -e "\n${GREEN}Code Style Consistency:${NC}"
+while IFS= read -r file; do
+    echo "Checking: $(basename "$file")"
+    check_code_style "$file"
+done < "${TEMP_DIR}/component_files.txt"
+
+echo -e "\n${GREEN}Performance Indicators:${NC}"
+while IFS= read -r file; do
+    echo "Checking: $(basename "$file")"
+    check_performance "$file"
+done < "${TEMP_DIR}/component_files.txt"
+
+# 14. Import/Export Analysis
+echo -e "\n${BLUE}14. Import/Export Analysis${NC}"
+
+echo -e "\n${GREEN}Import Patterns:${NC}"
+echo "Default imports: $(find_source_files -exec grep -l "import.*from" {} \; | xargs grep -c "import.*from" | awk '{sum+=$1} END {print sum}')"
+echo "Named imports: $(find_source_files -exec grep -l "import.*{" {} \; | xargs grep -c "import.*{" | awk '{sum+=$1} END {print sum}')"
+echo "Relative imports: $(find_source_files -exec grep -l "from '\.\." {} \; | xargs grep -c "from '\.\." | awk '{sum+=$1} END {print sum}')"
+
+echo -e "\n${GREEN}Export Patterns:${NC}"
+echo "Default exports: $(find_source_files -exec grep -l "export default" {} \; | wc -l)"
+echo "Named exports: $(find_source_files -exec grep -l "export const\|export function\|export class" {} \; | wc -l)"
+
+# 15. Type Safety Analysis
+echo -e "\n${BLUE}15. Type Safety Analysis${NC}"
+
+echo -e "\n${GREEN}Type Usage:${NC}"
+echo "Files using 'any': $(find_source_files -exec grep -l "any" {} \; | wc -l)"
+echo "Files using non-null assertions (!): $(find_source_files -exec grep -l "!" {} \; | wc -l)"
+echo "Files with type assertions (as): $(find_source_files -exec grep -l "as " {} \; | wc -l)"
+
+echo -e "\n${GREEN}Component Props Type Safety:${NC}"
+echo "Components with explicit prop types: $(find_source_files -exec grep -l "interface.*Props\|type.*Props" {} \; | wc -l)"
+echo "Components using PropTypes: $(find_source_files -exec grep -l "PropTypes" {} \; | wc -l)"
+
+# Add source code statistics
+echo -e "\n${BLUE}16. Source Code Statistics${NC}"
+echo -e "\n${GREEN}Files Analyzed:${NC}"
+
+# Count files properly
+TS_FILES=$(find . -type f -name "*.ts" -not -path "*/node_modules/*" -not -path "*/dist/*" -not -path "*/coverage/*" -not -path "*/dist-electron/*" -not -path "*/dist-web/*" -not -path "*/build/*" -not -path "*/out/*" -not -path "*/.next/*" -not -path "*/.cache/*" -not -path "*/.yarn/*" -not -path "*/node_modules/.vite/*" | wc -l)
+TSX_FILES=$(find . -type f -name "*.tsx" -not -path "*/node_modules/*" -not -path "*/dist/*" -not -path "*/coverage/*" -not -path "*/dist-electron/*" -not -path "*/dist-web/*" -not -path "*/build/*" -not -path "*/out/*" -not -path "*/.next/*" -not -path "*/.cache/*" -not -path "*/.yarn/*" -not -path "*/node_modules/.vite/*" | wc -l)
+
+echo "Total source files: $((TS_FILES + TSX_FILES))"
+echo "Component files (.tsx): $TSX_FILES"
+echo "Type files (.ts): $TS_FILES"
+
+echo -e "\n${GREEN}Lines of Code:${NC}"
+
+# Count lines properly
+TOTAL_LINES=$(find . -type f \( -name "*.ts" -o -name "*.tsx" \) -not -path "*/node_modules/*" -not -path "*/dist/*" -not -path "*/coverage/*" -not -path "*/dist-electron/*" -not -path "*/dist-web/*" -not -path "*/build/*" -not -path "*/out/*" -not -path "*/.next/*" -not -path "*/.cache/*" -not -path "*/.yarn/*" -not -path "*/node_modules/.vite/*" -exec wc -l {} \; | awk '{sum+=$1} END {print sum}')
+TOTAL_FILES=$((TS_FILES + TSX_FILES))
+AVG_LINES=$((TOTAL_LINES / TOTAL_FILES))
+
+echo "Total lines: $TOTAL_LINES"
+echo "Average lines per file: $AVG_LINES"
 
 echo -e "\n${GREEN}Analysis complete!${NC}" 
