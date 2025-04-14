@@ -6,16 +6,21 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "analyze": "chmod +x ./analyze-codebase.sh && ./analyze-codebase.sh"
   },
   "dependencies": {
     "@mantine/core": "^7.17.4",
     "@mantine/hooks": "^7.17.4",
+    "@tabler/icons-react": "^3.31.0",
+    "@types/matter-js": "^0.19.8",
     "@types/p5": "^1.7.6",
+    "matter-js": "^0.20.0",
     "p5": "^1.11.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.0"
+    "react-router-dom": "^6.22.0",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",

@@ -2,7 +2,7 @@ import { Container, Group, Text } from '@mantine/core';
 import { Link } from 'react-router-dom';
 
 const links = [
-  { link: '/collision_sim', label: 'Collisions Sim' },
+  { link: '/block_collision', label: 'Block Collision' },
   { link: '/example2', label: 'Example 2' },
   { link: '/example3', label: 'Example 3' },
   { link: '/example4', label: 'Example 4' },

@@ -13,13 +13,16 @@ body {
 }
 
 #canvas-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     height: 400px;
-    background: var(--mantine-color-body);
+    background: var(--simulation-background, #25262B);
     border-radius: var(--mantine-radius-md);
     box-shadow: var(--mantine-shadow-sm);
     overflow: hidden;
-    margin: 0;
+    margin: 0 auto;
 }
 
 .mantine-Button-filled {
@@ -109,11 +112,11 @@ input[type="range"]::-webkit-slider-thumb:hover {
 /* Dark mode adjustments */
 [data-mantine-color-scheme="dark"] {
     #canvas-container {
-        background: var(--mantine-color-dark-7);
+        background: var(--simulation-background, #25262B);
     }
 
     .mantine-Paper-root {
-        background: var(--mantine-color-dark-7);
+        background: var(--simulation-background, #25262B);
     }
 
     input[type="range"] {

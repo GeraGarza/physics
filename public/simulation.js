@@ -95,21 +95,21 @@ class Simulation {
 
     draw(p5) {
         // Clear background completely (no transparency)
-        p5.background(255);
+        p5.background('#25262B');
 
-        // Draw wall (dark gray)
-        p5.fill(50);
+        // Draw wall (light gray)
+        p5.fill(100);
         p5.noStroke();
         p5.rect(0, 0, 20, p5.height);
 
-        // Draw ground (thin black line)
-        p5.stroke(0);
+        // Draw ground (light gray line)
+        p5.stroke(100);
         p5.strokeWeight(1);
         p5.line(0, p5.height, p5.width, p5.height);
 
         // Draw blocks with crisp edges
         p5.strokeWeight(1);
-        p5.stroke(0);
+        p5.stroke(100);
         this.blocks.forEach(block => block.draw(p5));
 
         // Draw mass controls when simulation is stopped
@@ -120,11 +120,11 @@ class Simulation {
                 const controlX = block.x + block.size/2 - controlWidth/2;
 
                 // Draw mass control background
-                p5.fill(240);
+                p5.fill(50);
                 p5.rect(controlX, controlY, controlWidth, 50, 5); // Increased height
 
                 // Draw mass control text
-                p5.fill(0);
+                p5.fill(255);
                 p5.textSize(14); // Increased text size
                 p5.textAlign(p5.CENTER, p5.CENTER);
                 p5.text(`Mass: ${block.mass}`, controlX + controlWidth/2, controlY + 15);
@@ -135,11 +135,11 @@ class Simulation {
                         controlX + controlWidth/2, controlY + 35);
 
                 // Draw mass control buttons
-                p5.fill(200);
+                p5.fill(70);
                 p5.rect(controlX, controlY, 40, 50, 5, 0, 0, 5); // Increased button size
                 p5.rect(controlX + controlWidth - 40, controlY, 40, 50, 0, 5, 5, 0);
                 
-                p5.fill(0);
+                p5.fill(255);
                 p5.textSize(20); // Increased button text size
                 p5.text("-", controlX + 20, controlY + 25);
                 p5.text("+", controlX + controlWidth - 20, controlY + 25);
@@ -150,6 +150,7 @@ class Simulation {
         p5.textAlign(p5.LEFT, p5.TOP);
         p5.textSize(32);
         p5.textStyle(p5.BOLD);
+        p5.fill(255);
         p5.text(`Collisions: ${this.collisionCount}`, 30, 50);
     }
 

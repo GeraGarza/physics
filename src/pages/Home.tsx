@@ -11,7 +11,6 @@ export function Home() {
             size="h1"
             fw={800}
             variant="gradient"
-            gradient={{ from: 'blue', to: 'cyan' }}
           >
             Welcome to Physics Lab
           </Title>
@@ -23,7 +22,7 @@ export function Home() {
         <Group>
           <Button
             component={Link}
-            to="/collision_sim"
+            to="/block_collision"
             size="lg"
             variant="gradient"
             gradient={{ from: 'blue', to: 'cyan' }}
@@ -32,11 +31,21 @@ export function Home() {
           </Button>
           <Button
             component={Link}
-            to="/example2"
+            to="/double_pendulum"
             size="lg"
-            variant="light"
+            variant="gradient"
+            gradient={{ from: 'blue', to: 'cyan' }}
           >
-            Explore More Examples
+            Try Double Pendulum
+          </Button>
+          <Button
+            component={Link}
+            to="/newtons_cradle"
+            size="lg"
+            variant="gradient"
+            gradient={{ from: 'blue', to: 'cyan' }}
+          >
+            Try Newton's Cradle
           </Button>
         </Group>
 
@@ -55,10 +64,18 @@ export function Home() {
             </div>
             <div>
               <Text size="lg" fw={600}>
-                More Coming Soon
+                Double Pendulum Chaos
               </Text>
               <Text c="dimmed">
-                We're working on additional physics simulations to help you understand various concepts.
+                Witness the fascinating chaotic behavior of a double pendulum system. Adjust initial conditions and physical parameters to explore how small changes can lead to dramatically different outcomes.
+              </Text>
+            </div>
+            <div>
+              <Text size="lg" fw={600}>
+                Newton's Cradle
+              </Text>
+              <Text c="dimmed">
+                Experience the classic demonstration of conservation of momentum and energy. Adjust parameters like friction, restitution, and number of balls to see how they affect the system's behavior.
               </Text>
             </div>
           </Stack>

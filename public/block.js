@@ -53,7 +53,7 @@ class Block {
 
         // Draw block with crisp edges
         p5.fill(this.color);
-        p5.stroke(0);
+        p5.stroke(100);
         p5.strokeWeight(1);
         p5.rect(Math.round(this.x), this.y, this.size, this.size);
 

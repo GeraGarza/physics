@@ -2,10 +2,9 @@ import { Container, Group, Text } from '@mantine/core';
 import { Link, useLocation } from 'react-router-dom';
 
 const HEADER_LINKS = [
-  { link: '/collision_sim', label: 'Collisions Sim' },
-  { link: '/example2', label: 'Example 2' },
-  { link: '/example3', label: 'Example 3' },
-  { link: '/example4', label: 'Example 4' },
+  { link: '/block_collision', label: 'Block Collision' },
+  { link: '/double_pendulum', label: 'Double Pendulum' },
+  { link: '/newtons_cradle', label: "Newton's Cradle" },
 ] as const;
 
 export function HeaderSimple() {
@@ -30,7 +29,7 @@ export function HeaderSimple() {
           </Text>
         </Link>
 
-        <Group gap={5} visibleFrom="xs">
+        <Group gap={5}>
           {HEADER_LINKS.map((link) => (
             <Link
               key={link.label}
@@ -43,6 +42,7 @@ export function HeaderSimple() {
                 fontWeight: location.pathname === link.link ? 600 : 400,
                 backgroundColor: location.pathname === link.link ? 'var(--mantine-color-dark-6)' : 'transparent',
                 transition: 'all 150ms ease',
+                display: 'block',
               }}
             >
               {link.label}

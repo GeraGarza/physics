@@ -3,12 +3,13 @@ import { Box, Container, Stack } from '@mantine/core';
 import { SimulationControls } from '../components';
 import { Simulation } from '../types/simulation';
 import p5 from 'p5';
+import { simulationTheme } from '../theme/simulationTheme';
 
 interface P5Instance extends p5 {
   remove: () => void;
 }
 
-export function CollisionsSimulator() {
+export function BlockCollisionSimulator() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [simulation, setSimulation] = useState<Simulation | null>(null);
   const checkIntervalRef = useRef<number>();
@@ -95,7 +96,7 @@ export function CollisionsSimulator() {
             lastTime = currentTime;
 
             // Clear with slight transparency for motion blur effect
-            p.background(255, 20);
+            p.background(simulationTheme.background);
 
             // Update and draw simulation
             if (window.simulation.isRunning) {
@@ -136,12 +137,19 @@ export function CollisionsSimulator() {
 
   return (
     <Container size="xl">
-      <Stack gap="xl">
+      <Stack gap="xl" align="center">
         <Box 
           ref={containerRef} 
           style={{ 
             width: '100%',
-            backgroundColor: 'transparent'
+            maxWidth: '1000px',
+            height: '400px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: simulationTheme.background,
+            borderRadius: '12px',
+            overflow: 'hidden'
           }} 
         />
         {simulation && <SimulationControls simulation={simulation} />}
