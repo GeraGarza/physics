@@ -29,23 +29,6 @@ Witness the fascinating chaotic behavior of a double pendulum system. Adjust ini
 
 Experience the classic demonstration of conservation of momentum and energy with this interactive Newton's Cradle simulation. Observe how energy transfers through the system and how the number of balls affects the resulting motion.
 
-### 4. Particle Interactions
-![Particle Interaction Simulation](screenshots/interaction.png)
-
-Explore the behavior of particles under various force fields and interactions. This simulation allows you to:
-- Create and manipulate multiple particles
-- Apply different types of forces (gravitational, electric, magnetic)
-- Observe particle trajectories and interactions
-- Adjust physical parameters in real-time
-
-## Main Interface
-![Main Application Interface](screenshots/main.png)
-
-The application features a clean, modern interface built with Mantine UI components, making it easy to:
-- Switch between different simulations
-- Adjust simulation parameters
-- View real-time data and visualizations
-- Control simulation playback
 
 ## Getting Started
 
